@@ -1,0 +1,64 @@
+// see https://containers.dev/ for more info
+{
+  "dockerComposeFile": ["../docker-compose.yml", "docker-compose.extend.yaml"],
+  "service": "freva",
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:1": {
+      "installZsh": "true",
+      "username": "vscode",
+      "uid": "1000",
+      "gid": "1000",
+      "upgradePackages": "true"
+    },
+    "ghcr.io/devcontainers/features/node:1": "latest",
+    // the image already installs python but this adds some nice extras like automatically activating a virtualenv
+    // in .venv
+    "ghcr.io/devcontainers/features/python:1": {
+      // don't install a second python installation
+      "version": "none"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest",
+      "ppa": "false"
+    }
+  },
+  // Configure tool-specific properties.
+  "customizations": {
+    // Configure properties specific to VS Code.
+    "vscode": {
+      // Set *default* container specific settings.json values on container create.
+      "settings": {
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
+        "python.linting.enabled": true,
+        "python.linting.pylintEnabled": true,
+        "python.formatting.autopep8Path": "${workspaceFolder}/.venv/bin/autopep8",
+        "python.formatting.blackPath": "${workspaceFolder}/.venv/bin/black",
+        "python.formatting.yapfPath": "${workspaceFolder}/.venv/bin/yapf",
+        "python.linting.banditPath": "${workspaceFolder}/.venv/bin/bandit",
+        "python.linting.flake8Path": "${workspaceFolder}/.venv/bin/flake8",
+        "python.linting.mypyPath": "${workspaceFolder}/.venv/bin/mypy",
+        "python.linting.pycodestylePath": "${workspaceFolder}/.venv/bin/pycodestyle",
+        "python.linting.pydocstylePath": "${workspaceFolder}/.venv/bin/pydocstyle",
+        "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint"
+      },
+      // Add the IDs of extensions you want installed when the container is created.
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "esbenp.prettier-vscode",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "./.devcontainer/post-install.sh",
+
+  // Set `remoteUser` to `root` to connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
+  "remoteUser": "vscode"
+}
