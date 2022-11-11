@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.10
 
 # https://toil.readthedocs.io/en/latest/gettingStarted/install.html#extras
 RUN apt update && \
