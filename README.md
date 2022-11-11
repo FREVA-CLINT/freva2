@@ -12,7 +12,7 @@ Assuming a mysql-db according to the values in freva/settings.py is running
   poetry run python manage.py migrate
   poetry run python manage.py createsuperuser
   ...
-  poetry run python runserver
+  poetry run python manage.py runserver
 
 ```
 
