@@ -1,0 +1,19 @@
+version: "3"
+services:
+  freva:
+    image: python:3.11
+    volumes:
+      # Mounts the project folder to '/workspace'. While this file is in .devcontainer,
+      # mounts are relative to the first file in the list, which is a level up.
+      - /tmp/freva:/tmp/freva
+      - .:/workspace:cached
+    env_file: .devcontainer/config.env
+
+    # Overrides default command so things don't shut down after the process ends.
+    command: /bin/sh -c "while sleep 1000; do :; done"
+  wes-server:
+    volumes:
+      - ./example-assets/data:/work/data
+  celery:
+    volumes:
+      - ./example-assets/data:/work/data
