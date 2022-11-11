@@ -50,7 +50,8 @@
         "ms-python.vscode-pylance",
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
-        "waderyan.gitblame"
+        "waderyan.gitblame",
+        "mutantdino.resourcemonitor"
       ]
     }
   },
