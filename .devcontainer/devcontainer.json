@@ -51,7 +51,8 @@
         "esbenp.prettier-vscode",
         "ms-azuretools.vscode-docker",
         "waderyan.gitblame",
-        "mutantdino.resourcemonitor"
+        "mutantdino.resourcemonitor",
+        "tamasfe.even-better-toml"
       ]
     }
   },
