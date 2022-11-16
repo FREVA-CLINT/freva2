@@ -9,7 +9,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker:/var/lib/docker
-      - /tmp/toil-workflows:/tmp/toil-workflows
+      - ./freva-workdir/toil:/tmp/toil-workflows
     command: celery --broker=amqp://guest:guest@rabbitmq:5672// -A toil.server.celery_app worker --loglevel=INFO
     depends_on:
       - rabbitmq
@@ -25,7 +25,7 @@ services:
   wes-server:
     build: toil-docker
     volumes:
-      - /tmp/toil-workflows:/tmp/toil-workflows
+      - ./freva-workdir/toil:/tmp/toil-workflows
     environment:
       - TOIL_WES_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
     # TODO: toil server ignores --host if not run in debug even though the code would suggest it shouldn't
