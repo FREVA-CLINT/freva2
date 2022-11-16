@@ -21,5 +21,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name="index"),
     path("api/getjson", views.get_json, name="get_json"),
+    path("api/", include(("workflows.urls", "workflows"), namespace="workflows")),
     path("history/", include(("history.urls", "history"), namespace="history")),
 ]

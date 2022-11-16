@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "history",  # our own apps
     "webpack_loader",
     "frontend",
+    "workflows",
 ]
 
 MIDDLEWARE = [
@@ -79,7 +80,7 @@ WSGI_APPLICATION = "freva.wsgi.application"
 db_name = "freva"
 db_user = "freva"
 db_passwd = "T3st"
-db_host = "127.0.0.1"
+db_host = "mysql"
 db_port = 3306
 
 DATABASES = {
@@ -94,6 +95,14 @@ DATABASES = {
     },
 }
 
+MEDIA_ROOT = "/tmp/freva"
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ]
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
