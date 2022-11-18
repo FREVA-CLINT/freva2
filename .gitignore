@@ -64,7 +64,6 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
-static_root/
 
 # Flask stuff:
 instance/
@@ -157,6 +156,17 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# PyCharm
+#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
+#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
+#  and can be added to the global gitignore or merged into this file.  For a more nuclear
+#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
+#.idea/
+
+# End of https://www.toptal.com/developers/gitignore/api/python
+
+# Custom freva rules
+
 # Node stuff
 node_modules/
 webpack-stats.json
@@ -168,11 +178,7 @@ webpack-stats.json
 # frontend dist-folder
 dist/
 
-# PyCharm
-#  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
+# django distribution`
+static_root/
 
-# End of https://www.toptal.com/developers/gitignore/api/python
+
