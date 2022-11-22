@@ -22,5 +22,8 @@ urlpatterns = [
     path("", views.index, name="index"),
     path("api/getjson", views.get_json, name="get_json"),
     path("api/", include(("workflows.urls", "workflows"), namespace="workflows")),
+    path("api/", include(("runs.urls", "runs"), namespace="runs")),
     path("history/", include(("history.urls", "history"), namespace="history")),
 ]
+
+print(urlpatterns)

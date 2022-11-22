@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.viewsets import ViewSet
+from rest_framework.reverse import reverse
 
 from workflows.forms import WorkflowUploadForm
 from workflows.models import Workflow
@@ -22,7 +23,7 @@ class WorkflowViewSet(ViewSet):
         workflows = Workflow.objects.all()
         return Response(WorkflowSerializer(workflows, many=True).data)
 
-    def retrieve(self, request: HttpRequest, pk: str) -> Response:
+    def retrieve(self, _request: HttpRequest, pk: str) -> Response:
         workflow = Workflow.objects.filter(name=pk).first()
         return Response(WorkflowSerializer(workflow).data)
 
