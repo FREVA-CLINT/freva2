@@ -42,10 +42,11 @@ class RunViewSet(ViewSet):
             if workflow is None:
                 raise NotFound("referenced workflow does not exist")
 
+            # this isn't ideal but currently toil doesn't support authenticated
+            # workflow_urls meaning that our only option is to either have them all
+            # public or upload all workflow files for each run
             contents = workflow.data.read()
-            workflow_files = [
-                ("workflow_attachment", (workflow.data.name, contents, "text/plain"))
-            ]
+            workflow_files = [(workflow.data.name, contents)]
             run_response = toil.start_run(
                 RequestPayload(
                     workflow_url=workflow.data.name,

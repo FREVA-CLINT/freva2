@@ -1,10 +1,9 @@
 import json
+from dataclasses import dataclass
 from io import BytesIO
 from typing import Any, Optional
-from dataclasses import dataclass
 
 import requests
-from pydantic import BaseModel, Field
 
 from .responses import StartRunResponse
 
@@ -44,13 +43,17 @@ class ToilClient:
     def start_run(
         self,
         payload: RequestPayload,
-        workflow_attachments: list[tuple[str, tuple[str, BytesIO, str]]],
+        attachments: Optional[list[tuple[str, BytesIO]]],
     ) -> StartRunResponse:
-        print(payload.toil_param_format())
+        # workflow_attachment needs to be handled separately from the other parameters
+        # because of how requests deals with file uploads
+        if attachments:
+            files = map(lambda a: ("workflow_attachment", a), attachments)
+        else:
+            files = None
         resp = requests.post(
             self.build_url("runs"),
             data=payload.toil_param_format(),
-            files=workflow_attachments,
+            files=files,
         )
-        print(resp.text)
         return StartRunResponse.parse_raw(resp.text)
