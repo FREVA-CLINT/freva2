@@ -2,6 +2,8 @@ import io
 from typing import TYPE_CHECKING, Sequence
 
 from django.http import HttpRequest
+from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -12,12 +14,11 @@ from rest_framework.serializers import (
     SlugRelatedField,
 )
 from rest_framework.viewsets import ViewSet
-from rest_framework.exceptions import NotFound
-from rest_framework.reverse import reverse
 
-from workflows.models import Workflow
-from toil.client import RequestPayload, ToilClient
+from freva import settings
 from runs.models import Run
+from toil.client import RunWorkflow, ToilClient
+from workflows.models import Workflow
 
 if TYPE_CHECKING:
     from rest_framework.permissions import _PermissionClass
@@ -31,7 +32,7 @@ class RunViewSet(ViewSet):
         return Response(RunSerializer(runs, many=True).data)
 
     def create(self, request: HttpRequest) -> Response:
-        toil = ToilClient("wes-server", 8001)
+        toil = ToilClient(settings.TOIL["host"], settings.TOIL["port"])
         stream = io.BytesIO(request.body)
         data = JSONParser().parse(stream)
 
@@ -47,8 +48,8 @@ class RunViewSet(ViewSet):
             # public or upload all workflow files for each run
             contents = workflow.data.read()
             workflow_files = [(workflow.data.name, contents)]
-            run_response = toil.start_run(
-                RequestPayload(
+            run_response = toil.run_workflow(
+                RunWorkflow(
                     workflow_url=workflow.data.name,
                     workflow_type="cwl",
                     workflow_type_version="v1.2",
@@ -67,6 +68,15 @@ class RunViewSet(ViewSet):
         if run is None:
             raise NotFound
         return Response(RunSerializer(run).data)
+
+    @action(detail=True, methods=["get"])
+    def status(self, _request: HttpRequest, pk: str) -> Response:
+        toil = ToilClient(settings.TOIL["host"], settings.TOIL["port"])
+        run = Run.objects.filter(id=pk).first()
+        if run is None:
+            raise NotFound
+        toil_info = toil.get_run_log(run.id)
+        return Response(toil_info.dict())
 
 
 class CreateRunSerializer(Serializer):

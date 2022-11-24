@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from typing import TypedDict
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -97,6 +98,14 @@ DATABASES = {
 }
 
 MEDIA_ROOT = "/tmp/freva"
+
+
+class ToilSettings(TypedDict):
+    host: str
+    port: int
+
+
+TOIL: ToilSettings = {"host": "wes-server", "port": 8001}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

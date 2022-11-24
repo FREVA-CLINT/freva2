@@ -2,7 +2,7 @@ from typing import Sequence, cast, TYPE_CHECKING, Union
 
 from django.http import FileResponse, HttpRequest
 from rest_framework import serializers, status
-from rest_framework.decorators import api_view, permission_classes, action
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
