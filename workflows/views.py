@@ -1,16 +1,15 @@
-from typing import Sequence, cast, TYPE_CHECKING, Union
+from typing import Sequence, TYPE_CHECKING, Union
 
 from django.http import FileResponse, HttpRequest
-from rest_framework import serializers, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.viewsets import ViewSet
-from rest_framework.reverse import reverse
 
 from workflows.forms import WorkflowUploadForm
 from workflows.models import Workflow
+from .serializers import WorkflowSerializer
 
 if TYPE_CHECKING:
     from rest_framework.permissions import _PermissionClass
@@ -48,10 +47,3 @@ class WorkflowViewSet(ViewSet):
         if workflow is None:
             raise NotFound()
         return FileResponse(workflow.data.file)
-
-
-class WorkflowSerializer(serializers.Serializer):
-    name = serializers.CharField()
-    author = serializers.CharField()
-    cwl_version = serializers.CharField()
-    created = serializers.DateTimeField()

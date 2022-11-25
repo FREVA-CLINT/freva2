@@ -7,18 +7,14 @@ from rest_framework.exceptions import NotFound
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.serializers import (
-    CharField,
-    DictField,
-    Serializer,
-    SlugRelatedField,
-)
 from rest_framework.viewsets import ViewSet
 
 from freva import settings
-from runs.models import Run
 from toil.client import RunWorkflow, ToilClient
 from workflows.models import Workflow
+
+from .models import Run
+from .serializers import CreateRunSerializer, RunSerializer
 
 if TYPE_CHECKING:
     from rest_framework.permissions import _PermissionClass
@@ -77,16 +73,3 @@ class RunViewSet(ViewSet):
             raise NotFound
         toil_info = toil.get_run_log(run.id)
         return Response(toil_info.dict())
-
-
-class CreateRunSerializer(Serializer):
-    workflow_name: CharField = CharField()
-    # TODO: it might be useful to check this against the expected inputs to the workflow
-    inputs: DictField = DictField()
-
-
-class RunSerializer(Serializer):
-    id: CharField = CharField()
-    workflow: SlugRelatedField = SlugRelatedField(
-        many=False, read_only=True, slug_field="name"
-    )
