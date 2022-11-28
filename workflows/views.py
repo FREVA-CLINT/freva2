@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.viewsets import ViewSet
+from rest_framework import status
 
 from workflows.forms import WorkflowUploadForm
 from workflows.models import Workflow
@@ -30,16 +31,17 @@ class WorkflowViewSet(ViewSet):
         form = WorkflowUploadForm(request.POST, request.FILES)
         # TODO: check that the workflow is valid
         # TODO: either get the cwl file version from the user or extract from the file
-        if form.is_valid():
-            file = request.FILES["file"]
-            workflow = Workflow(data=file)
-            workflow.name = form.cleaned_data["name"]
-            # TODO: try to figure out the types here for mypy to accept this
-            workflow.author = request.user  # type: ignore [assignment]
-            workflow.save()
-            # TODO: maybe make a better response
-            return Response({"success": True})
-        return Response({"success": False})
+        if not form.is_valid():
+            return Response(
+                exception=True, status=status.HTTP_400_BAD_REQUEST, data=form.errors
+            )
+        file = request.FILES["file"]
+        workflow = Workflow(data=file)
+        workflow.name = form.cleaned_data["name"]
+        # TODO: try to figure out the types here for mypy to accept this
+        workflow.author = request.user  # type: ignore [assignment]
+        workflow.save()
+        return Response(status=status.HTTP_201_CREATED)
 
     @action(detail=True, methods=["get"])
     def workflow(self, _request: HttpRequest, pk: str) -> Union[Response, FileResponse]:

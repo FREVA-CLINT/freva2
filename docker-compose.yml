@@ -22,6 +22,8 @@ services:
       MYSQL_ROOT_PASSWORD: test_password_please_ignore
     ports:
       - "3306:3306"
+    volumes:
+      - ./.devcontainer/mysql:/docker-entrypoint-initdb.d
   wes-server:
     build: toil-docker
     volumes:
