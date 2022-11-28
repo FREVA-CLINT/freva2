@@ -164,3 +164,21 @@ cython_debug/
 #.idea/
 
 # End of https://www.toptal.com/developers/gitignore/api/python
+
+# Custom freva rules
+
+# Node stuff
+node_modules/
+webpack-stats.json
+
+# vim
+*.swp
+*.swo
+
+# frontend dist-folder
+dist/
+
+# django distribution`
+static_root/
+
+

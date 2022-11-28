@@ -1,8 +1,11 @@
+<!DOCTYPE html>
+{% load render_bundle from webpack_loader %}
 <html>
-  <head>
-    <title>{{title}}</title>
-  </head>
-  <body>
-    Hello World
-  </body>
+    <head>
+        {% render_bundle 'main' 'css' %}
+    </head>
+    <body>
+      <div id="root">
+    </body>
+    {% render_bundle 'main' 'js'%}
 </html>

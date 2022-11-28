@@ -1,0 +1,22 @@
+{
+  "name": "freva2",
+  "version": "0.0.1",
+  "scripts": {
+    "start": "concurrently \"poetry run python manage.py runserver 8000\" \"cd frontend && npm run dev\"",
+    "lint": "cd frontend && npm run lint",
+    "build": "cd frontend && npm run build",
+    "build:dev": "cd frontend && npm run build:dev",
+    "dev": "cd frontend && npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FREVA-CLINT/freva2"
+  },
+  "bugs": {
+    "url": "https://github.com/FREVA-CLINT/freva2/issues"
+  },
+  "homepage": "https://github.com/FREVA-CLINT/freva2",
+  "dependencies": {
+    "concurrently": "7.5.0"
+  }
+}
