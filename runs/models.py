@@ -1,13 +1,7 @@
 from typing import cast
 
-from django.db.models import (
-    DO_NOTHING,
-    CharField,
-    ForeignKey,
-    Model,
-)
+from django.db.models import DO_NOTHING, CharField, ForeignKey, Model
 
-# Create your models here.
 from workflows.models import Workflow
 
 

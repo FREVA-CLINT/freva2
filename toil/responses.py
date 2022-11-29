@@ -10,7 +10,6 @@ class StartRun(BaseModel):
 
 
 class RunInfo(BaseModel):
-    # TODO: properly type this
     run_id: str
     request: RunWorkflow
     state: str

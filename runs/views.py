@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING, Sequence
 
 from django.http import HttpRequest
 from rest_framework.decorators import action
+from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
@@ -33,31 +34,31 @@ class RunViewSet(ViewSet):
         data = JSONParser().parse(stream)
 
         serializer = CreateRunSerializer(data=data)
-        if serializer.is_valid():
-            opts = serializer.data
-            workflow = Workflow.objects.filter(name=opts["workflow_name"]).first()
-            if workflow is None:
-                raise NotFound("referenced workflow does not exist")
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # this isn't ideal but currently toil doesn't support authenticated
-            # workflow_urls meaning that our only option is to either have them all
-            # public or upload all workflow files for each run
-            contents = workflow.data.read()
-            workflow_files = [(workflow.data.name, contents)]
-            run_response = toil.run_workflow(
-                RunWorkflow(
-                    workflow_url=workflow.data.name,
-                    workflow_type="cwl",
-                    workflow_type_version="v1.2",
-                    workflow_params=opts["inputs"],
-                ),
-                workflow_files,
-            )
-            run = Run(id=run_response.run_id, workflow=workflow)
-            run.save()
-            return Response(RunSerializer(run).data)
-        else:
-            return Response(serializer.errors)
+        opts = serializer.data
+        workflow = Workflow.objects.filter(name=opts["workflow_name"]).first()
+        if workflow is None:
+            raise NotFound("referenced workflow does not exist")
+
+        # this isn't ideal but currently toil doesn't support authenticated
+        # workflow_urls meaning that our only option is to either have them all
+        # public or upload all workflow files for each run
+        contents = workflow.data.read()
+        workflow_files = [(workflow.data.name, contents)]
+        run_response = toil.run_workflow(
+            RunWorkflow(
+                workflow_url=workflow.data.name,
+                workflow_type="cwl",
+                workflow_type_version="v1.2",
+                workflow_params=opts["inputs"],
+            ),
+            workflow_files,
+        )
+        run = Run(id=run_response.run_id, workflow=workflow)
+        run.save()
+        return Response(RunSerializer(run).data)
 
     def retrieve(self, request: HttpRequest, pk: str) -> Response:
         run = Run.objects.filter(id=pk).first()

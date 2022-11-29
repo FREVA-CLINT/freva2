@@ -1,15 +1,15 @@
-from typing import Sequence, TYPE_CHECKING, Union
+from typing import TYPE_CHECKING, Sequence, Union
 
 from django.http import FileResponse, HttpRequest
+from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
 from rest_framework.viewsets import ViewSet
-from rest_framework import status
 
-from workflows.forms import WorkflowUploadForm
-from workflows.models import Workflow
+from .forms import WorkflowUploadForm
+from .models import Workflow
 from .serializers import WorkflowSerializer
 
 if TYPE_CHECKING:
