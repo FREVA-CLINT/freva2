@@ -39,7 +39,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "history",  # our own apps
     "webpack_loader",
     "frontend",
     "workflows",
