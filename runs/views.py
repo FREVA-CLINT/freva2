@@ -2,8 +2,8 @@ import io
 from typing import TYPE_CHECKING, Sequence
 
 from django.http import HttpRequest
-from rest_framework.decorators import action
 from rest_framework import status
+from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import IsAuthenticated
@@ -18,7 +18,9 @@ from .models import Run
 from .serializers import CreateRunSerializer, RunSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.permissions import _PermissionClass  # type: ignore [reportPrivateUsage]
+    from rest_framework.permissions import (
+        _PermissionClass,
+    )  # type: ignore [reportPrivateUsage]
 
 
 class RunViewSet(ViewSet):

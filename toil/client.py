@@ -3,8 +3,8 @@ from typing import Optional
 
 import requests
 
-from .responses import StartRun, RunInfo
 from .requests import RunWorkflow
+from .responses import RunInfo, StartRun
 
 
 class ToilClient:

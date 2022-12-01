@@ -9,12 +9,15 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from freva.requests import AuthenticatedHttpRequest
+
 from .forms import WorkflowUploadForm
 from .models import Workflow
 from .serializers import WorkflowSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.permissions import _PermissionClass  # type: ignore [reportPrivateUsage]
+    from rest_framework.permissions import (
+        _PermissionClass,
+    )  # type: ignore [reportPrivateUsage]
 
 
 class WorkflowViewSet(ViewSet):

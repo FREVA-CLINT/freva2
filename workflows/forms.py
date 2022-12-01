@@ -1,4 +1,4 @@
-from django.forms import Form, CharField, FileField
+from django.forms import CharField, FileField, Form
 
 
 class WorkflowUploadForm(Form):
