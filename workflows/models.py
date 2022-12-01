@@ -20,5 +20,4 @@ class Workflow(Model):
     cwl_version = CharField(max_length=5)
     created = DateTimeField(default=datetime.now)
     data: FileField = FileField(upload_to=user_workflow_path)
-    # TODO: revisit this on_delete
-    author: ForeignKey[User] = ForeignKey(User, on_delete=DO_NOTHING)
+    author = ForeignKey(User, on_delete=DO_NOTHING)

@@ -1,4 +1,5 @@
 from typing import Any, Optional
+from enum import StrEnum, auto
 
 from pydantic import BaseModel
 
@@ -12,12 +13,13 @@ class StartRun(BaseModel):
 class RunInfo(BaseModel):
     run_id: str
     request: RunWorkflow
-    state: str
+    state: "RunState"
     run_log: "RunLog"
     task_logs: list["TaskLog"]
-    # this is a structure object but the documentation doesn't say how, need to figure
-    # that out
-    outputs: dict[str, Any]
+    # the type here would depend on the workflow engine
+    # for our cases this always be CWL so we may be able to give this a proper type in
+    # the future
+    outputs: dict[str, Any]  # type: ignore [misc]
 
 
 class RunLog(BaseModel):
@@ -38,6 +40,18 @@ class TaskLog(BaseModel):
     stdout: str
     stderr: str
     exit_code: int
+
+
+class RunState(StrEnum):
+    UNKNOWN = "UNKNOWN"
+    QUEUED = "QUEUED"
+    INITIALIZING = "INITIALIZING"
+    RUNNING = "RUNNING"
+    COMPLETE = "COMPLETE"
+    EXECUTOR_ERROR = "EXECUTOR_ERROR"
+    SYSTEM_ERROR = "SYSTEM_ERROR"
+    CANCELED = "CANCELED"
+    CANCELING = "CANCELING"
 
 
 RunInfo.update_forward_refs()

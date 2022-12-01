@@ -8,7 +8,10 @@ class RunWorkflow(BaseModel):
     workflow_url: str
     workflow_type: str  # or enum that's serialized to a str?
     workflow_type_version: str
-    workflow_params: dict[str, Any]
+    # this is actually Any (at least per the documentation) because it will depend on
+    # workflow engine that actually runs this
+    # in practice this will be CWL so could become a real type eventually
+    workflow_params: dict[str, Any]  # type: ignore [misc]
     workflow_engine_parameters: Optional[dict[str, Optional[str]]] = None
     tags: Optional[dict[str, str]] = None
 

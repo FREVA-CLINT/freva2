@@ -24,7 +24,6 @@ pylint = "^2.15.5"
 django-types = "^0.16.0"
 # this has a similar relation to djagnorestframework-stubs
 djangorestframework-types = "^0.8.0"
-pyright = "^1.1.281"
 
 [tool.pyright]
 typeCheckingMode = "strict"
