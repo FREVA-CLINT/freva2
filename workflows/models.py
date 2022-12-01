@@ -16,7 +16,7 @@ def user_workflow_path(instance: "Workflow", filename: str) -> str:
 
 
 class Workflow(Model):
-    name: CharField[str] = CharField(max_length=64)
+    name = CharField(max_length=64)
     cwl_version = CharField(max_length=5)
     created = DateTimeField(default=datetime.now)
     data: FileField = FileField(upload_to=user_workflow_path)
