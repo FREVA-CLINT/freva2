@@ -12,8 +12,8 @@ class RunWorkflow(BaseModel):
     workflow_engine_parameters: Optional[dict[str, Optional[str]]] = None
     tags: Optional[dict[str, str]] = None
 
-    def toil_param_format(self) -> dict[str, Any]:
-        out: dict[str, Any] = {
+    def toil_param_format(self) -> dict[str, str]:
+        out: dict[str, str] = {
             "workflow_url": self.workflow_url,
             "workflow_type": self.workflow_type,
             "workflow_type_version": self.workflow_type_version,

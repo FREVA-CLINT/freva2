@@ -18,7 +18,7 @@ from .models import Run
 from .serializers import CreateRunSerializer, RunSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.permissions import _PermissionClass
+    from rest_framework.permissions import _PermissionClass  # type: ignore [reportPrivateUsage]
 
 
 class RunViewSet(ViewSet):

@@ -1,7 +1,5 @@
-import json
-from dataclasses import dataclass
 from io import BytesIO
-from typing import Any, Optional
+from typing import Optional
 
 import requests
 

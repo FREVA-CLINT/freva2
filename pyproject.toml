@@ -15,13 +15,21 @@ pydantic = "^1.10.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^22.10.0"
-mypy = "^0.982"
+mypy = "^0.991"
 pytest = "^7.2.0"
 pylint = "^2.15.5"
-django-stubs = { extras = ["compatible-mypy"], version = "^1.13.0" }
-# the install instructions say to use [compatible-mypy] which limits the max mypy version to lower than ours
-# so I'm not sure if this will cause problems but it seems to work
-djangorestframework-stubs = "^1.7.0"
+# For reasons which are unclear, this is a fork of django-stubs which offers slightly different types and vscode ships
+# with and uses these instead of django-stubs even if it's installed. Rather than deal with different tools offering
+# different answers about what types things are, I'm having it just use these so hopefully make this all uniform
+django-types = "^0.16.0"
+# this has a similar relation to djagnorestframework-stubs
+djangorestframework-types = "^0.8.0"
+pyright = "^1.1.281"
+
+[tool.pyright]
+typeCheckingMode = "strict"
+# reportPrivateUsage = "warning"
+# reportUnusedImport = "warning"
 
 [build-system]
 requires = ["poetry-core"]

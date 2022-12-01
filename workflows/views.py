@@ -8,12 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
+from freva.requests import AuthenticatedHttpRequest
 from .forms import WorkflowUploadForm
 from .models import Workflow
 from .serializers import WorkflowSerializer
 
 if TYPE_CHECKING:
-    from rest_framework.permissions import _PermissionClass
+    from rest_framework.permissions import _PermissionClass  # type: ignore [reportPrivateUsage]
 
 
 class WorkflowViewSet(ViewSet):
@@ -27,7 +28,7 @@ class WorkflowViewSet(ViewSet):
         workflow = Workflow.objects.filter(name=pk).first()
         return Response(WorkflowSerializer(workflow).data)
 
-    def create(self, request: HttpRequest) -> Response:
+    def create(self, request: AuthenticatedHttpRequest) -> Response:
         form = WorkflowUploadForm(request.POST, request.FILES)
         # TODO: check that the workflow is valid
         # TODO: either get the cwl file version from the user or extract from the file
@@ -35,11 +36,18 @@ class WorkflowViewSet(ViewSet):
             return Response(
                 exception=True, status=status.HTTP_400_BAD_REQUEST, data=form.errors
             )
-        file = request.FILES["file"]
+        file = request.FILES.get("file")
+        if file is None:
+            # TODO: should the message here be better?
+            return Response(
+                exception=True,
+                status=status.HTTP_400_BAD_REQUEST,
+                data={"file": "no file attached to request"},
+            )
         workflow = Workflow(data=file)
         workflow.name = form.cleaned_data["name"]
         # TODO: try to figure out the types here for mypy to accept this
-        workflow.author = request.user  # type: ignore [assignment]
+        workflow.author = request.user
         workflow.save()
         return Response(status=status.HTTP_201_CREATED)
 

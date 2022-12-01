@@ -1,5 +1,3 @@
-from typing import cast
-
 from django.contrib.auth.models import User
 from django.db.models import (
     DO_NOTHING,
@@ -11,8 +9,6 @@ from django.db.models import (
 )
 from django.utils.timezone import datetime
 
-from freva import settings
-
 
 def user_workflow_path(instance: "Workflow", filename: str) -> str:
     user_id = instance.author.get_username()
@@ -20,9 +16,9 @@ def user_workflow_path(instance: "Workflow", filename: str) -> str:
 
 
 class Workflow(Model):
-    name: CharField = CharField(max_length=64)
-    cwl_version: CharField = CharField(max_length=5)
-    created: DateTimeField = DateTimeField(default=datetime.now)
+    name: CharField[str] = CharField(max_length=64)
+    cwl_version = CharField(max_length=5)
+    created = DateTimeField(default=datetime.now)
     data: FileField = FileField(upload_to=user_workflow_path)
     # TODO: revisit this on_delete
-    author: User = cast(User, ForeignKey(User, on_delete=DO_NOTHING))
+    author: ForeignKey[User] = ForeignKey(User, on_delete=DO_NOTHING)
