@@ -16,8 +16,8 @@ from .serializers import WorkflowSerializer
 
 if TYPE_CHECKING:
     from rest_framework.permissions import (
-        _PermissionClass,
-    )  # type: ignore [reportPrivateUsage]
+        _PermissionClass,  # type: ignore [reportPrivateUsage]
+    )
 
 
 class WorkflowViewSet(ViewSet):
