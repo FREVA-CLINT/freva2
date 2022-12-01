@@ -1,5 +1,5 @@
 from typing import Any, Optional
-from enum import StrEnum, auto
+from enum import StrEnum
 
 from pydantic import BaseModel
 
