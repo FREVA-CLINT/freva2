@@ -24,11 +24,22 @@ pylint = "^2.15.5"
 django-types = "^0.16.0"
 # this has a similar relation to djagnorestframework-stubs
 djangorestframework-types = "^0.8.0"
+types-requests = "^2.28.11.5"
 
 [tool.pyright]
 typeCheckingMode = "strict"
 # reportPrivateUsage = "warning"
 # reportUnusedImport = "warning"
+
+[tool.mypy]
+disallow_untyped_defs = true
+disallow_any_unimported = true
+disallow_any_explicit = true
+disallow_any_generics = true
+no_implicit_optional = true
+check_untyped_defs = true
+warn_return_any = true
+show_error_codes = true
 
 [build-system]
 requires = ["poetry-core"]
