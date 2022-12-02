@@ -1,7 +1,4 @@
-run:
-	poetry run python manage.py runserver 0.0.0.0:8000
-
-lint: mypy pyright pylint
+lint: mypy pylint
 
 mypy:
 	poetry run mypy .
