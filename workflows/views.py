@@ -39,15 +39,7 @@ class WorkflowViewSet(ViewSet):
             return Response(
                 exception=True, status=status.HTTP_400_BAD_REQUEST, data=form.errors
             )
-        file = request.FILES.get("file")
-        if file is None:
-            # TODO: should the message here be better?
-            return Response(
-                exception=True,
-                status=status.HTTP_400_BAD_REQUEST,
-                data={"file": "no file attached to request"},
-            )
-        workflow = Workflow(data=file)
+        workflow = Workflow(data=form.cleaned_data["file"])
         workflow.name = form.cleaned_data["name"]
         # TODO: try to figure out the types here for mypy to accept this
         workflow.author = request.user
