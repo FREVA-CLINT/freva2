@@ -41,7 +41,6 @@ class WorkflowViewSet(ViewSet):
             )
         workflow = Workflow(data=form.cleaned_data["file"])
         workflow.name = form.cleaned_data["name"]
-        # TODO: try to figure out the types here for mypy to accept this
         workflow.author = request.user
         workflow.save()
         return Response(status=status.HTTP_201_CREATED)
