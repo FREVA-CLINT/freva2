@@ -1,7 +1,7 @@
-import io
 from typing import TYPE_CHECKING, Sequence
 
 from django.http import HttpRequest
+from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
@@ -30,12 +30,12 @@ class RunViewSet(ViewSet):
         runs = Run.objects.all()
         return Response(RunSerializer(runs, many=True).data)
 
-    def create(self, request: HttpRequest) -> Response:
+    def create(self, request: Request) -> Response:
         toil = ToilClient(settings.TOIL["host"], settings.TOIL["port"])
-        stream = io.BytesIO(request.body)
-        data = JSONParser().parse(stream)
 
+        data = JSONParser().parse(request)
         serializer = CreateRunSerializer(data=data)
+
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -47,6 +47,8 @@ class RunViewSet(ViewSet):
         # this isn't ideal but currently toil doesn't support authenticated
         # workflow_urls meaning that our only option is to either have them all
         # public or upload all workflow files for each run
+
+        # TODO: this also doesn't handle workflows consisting of multiple files
         contents = workflow.data.read()
         workflow_files = [(workflow.data.name, contents)]
         run_response = toil.run_workflow(
