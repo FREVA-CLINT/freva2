@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from django.contrib.auth.models import User
 from django.db.models import (
     DO_NOTHING,
@@ -16,8 +17,12 @@ def user_workflow_path(instance: "Workflow", filename: str) -> str:
 
 
 class Workflow(Model):
-    name = CharField(max_length=64)
-    cwl_version = CharField(max_length=5)
-    created = DateTimeField(default=datetime.now)
+    name: "CharField[str, str]" = CharField(max_length=64)
+    cwl_version: "CharField[str, str]" = CharField(max_length=5)
+    created: "DateTimeField[datetime, datetime]" = DateTimeField(default=datetime.now)
     data: FileField = FileField(upload_to=user_workflow_path)
-    author = ForeignKey(User, on_delete=DO_NOTHING)
+    author: ForeignKey[User, User] = ForeignKey(User, on_delete=DO_NOTHING)
+
+
+if TYPE_CHECKING:
+    reveal_type(Workflow.author)

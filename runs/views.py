@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, Sequence
 
-from django.http import HttpRequest
 from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.decorators import action
@@ -26,7 +25,7 @@ if TYPE_CHECKING:
 class RunViewSet(ViewSet):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
-    def list(self, request: HttpRequest) -> Response:
+    def list(self, _request: Request) -> Response:
         runs = Run.objects.all()
         return Response(RunSerializer(runs, many=True).data)
 
@@ -64,14 +63,14 @@ class RunViewSet(ViewSet):
         run.save()
         return Response(RunSerializer(run).data)
 
-    def retrieve(self, request: HttpRequest, pk: str) -> Response:
+    def retrieve(self, _request: Request, pk: str) -> Response:
         run = Run.objects.filter(id=pk).first()
         if run is None:
             raise NotFound
         return Response(RunSerializer(run).data)
 
     @action(detail=True, methods=["get"])
-    def status(self, _request: HttpRequest, pk: str) -> Response:
+    def status(self, _request: Request, pk: str) -> Response:
         toil = ToilClient(settings.TOIL["host"], settings.TOIL["port"])
         run = Run.objects.filter(id=pk).first()
         if run is None:
