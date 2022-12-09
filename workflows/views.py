@@ -44,6 +44,10 @@ class WorkflowViewSet(ViewSet):
         workflow.name = form.cleaned_data["name"]
         match request.user:
             case User() as user:
+                # this is weird but valid because `user` will still be in scope for the
+                # rest of this function. Thanks, Python, I hate it!
+                # we could move the lower bits into this to make it look less weird or
+                # maybe pull this into a function in a custom `Request` class?
                 pass
             case _:
                 raise NotAuthenticated()

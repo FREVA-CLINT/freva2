@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 from django.contrib.auth.models import User
 from django.db.models import (
     DO_NOTHING,
@@ -22,7 +21,3 @@ class Workflow(Model):
     created: "DateTimeField[datetime, datetime]" = DateTimeField(default=datetime.now)
     data: FileField = FileField(upload_to=user_workflow_path)
     author: ForeignKey[User, User] = ForeignKey(User, on_delete=DO_NOTHING)
-
-
-if TYPE_CHECKING:
-    reveal_type(Workflow.author)
