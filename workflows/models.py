@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AbstractBaseUser
 from django.db.models import (
     DO_NOTHING,
     CharField,
@@ -20,4 +20,6 @@ class Workflow(Model):
     cwl_version: "CharField[str, str]" = CharField(max_length=5)
     created: "DateTimeField[datetime, datetime]" = DateTimeField(default=datetime.now)
     data: FileField = FileField(upload_to=user_workflow_path)
-    author: ForeignKey[User, User] = ForeignKey(User, on_delete=DO_NOTHING)
+    author: ForeignKey[AbstractBaseUser, AbstractBaseUser] = ForeignKey(
+        User, on_delete=DO_NOTHING
+    )

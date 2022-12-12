@@ -1,15 +1,15 @@
 from typing import TYPE_CHECKING, Sequence, Union
 
 from django.http import FileResponse
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import AnonymousUser, User
-from rest_framework.request import Request
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound, NotAuthenticated
+from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+
+from freva.requests import authed_user
 
 from .forms import WorkflowUploadForm
 from .models import Workflow
@@ -30,6 +30,8 @@ class WorkflowViewSet(ViewSet):
 
     def retrieve(self, _request: Request, pk: str) -> Response:
         workflow = Workflow.objects.filter(name=pk).first()
+        if workflow is None:
+            raise NotFound()
         return Response(WorkflowSerializer(workflow).data)
 
     def create(self, request: Request) -> Response:
@@ -42,16 +44,7 @@ class WorkflowViewSet(ViewSet):
             )
         workflow = Workflow(data=form.cleaned_data["file"])
         workflow.name = form.cleaned_data["name"]
-        match request.user:
-            case User() as user:
-                # this is weird but valid because `user` will still be in scope for the
-                # rest of this function. Thanks, Python, I hate it!
-                # we could move the lower bits into this to make it look less weird or
-                # maybe pull this into a function in a custom `Request` class?
-                pass
-            case _:
-                raise NotAuthenticated()
-        workflow.author = user
+        workflow.author = authed_user(request)
         workflow.save()
         return Response(status=status.HTTP_201_CREATED)
 
