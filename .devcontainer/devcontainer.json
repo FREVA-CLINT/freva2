@@ -34,6 +34,7 @@
         "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
         "python.linting.enabled": true,
         "python.linting.pylintEnabled": true,
+        "python.linting.mypyEnabled": true,
         "python.formatting.autopep8Path": "${workspaceFolder}/.venv/bin/autopep8",
         "python.formatting.blackPath": "${workspaceFolder}/.venv/bin/black",
         "python.formatting.yapfPath": "${workspaceFolder}/.venv/bin/yapf",

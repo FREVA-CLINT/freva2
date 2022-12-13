@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+from typing import TypedDict
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +26,7 @@ SECRET_KEY = "django-insecure-9q_cy#5uj!4=q#xeh(!jhrosb_z%b1g863ba8&mgcygly+hvk!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS: list[str] = []
+ALLOWED_HOSTS: list[str] = ["freva"]
 
 
 # Application definition
@@ -38,9 +39,10 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "history",  # our own apps
     "webpack_loader",
     "frontend",
+    "workflows",
+    "runs",
 ]
 
 MIDDLEWARE = [
@@ -79,7 +81,7 @@ WSGI_APPLICATION = "freva.wsgi.application"
 db_name = "freva"
 db_user = "freva"
 db_passwd = "T3st"
-db_host = "127.0.0.1"
+db_host = "mysql"
 db_port = 3306
 
 DATABASES = {
@@ -94,6 +96,23 @@ DATABASES = {
     },
 }
 
+MEDIA_ROOT = "/tmp/freva"
+
+
+class ToilSettings(TypedDict):
+    host: str
+    port: int
+
+
+TOIL: ToilSettings = {"host": "wes-server", "port": 8001}
+
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.BasicAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
+    ],
+    "EXCEPTION_HANDLER": "rest_framework.views.exception_handler",
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

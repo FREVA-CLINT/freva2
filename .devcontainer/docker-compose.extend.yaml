@@ -5,12 +5,14 @@ services:
     volumes:
       # Mounts the project folder to '/workspace'. While this file is in .devcontainer,
       # mounts are relative to the first file in the list, which is a level up.
-      - /tmp/freva:/tmp/freva
+      - ./freva-workdir:/tmp/freva
       - .:/workspace:cached
     env_file: .devcontainer/config.env
 
     # Overrides default command so things don't shut down after the process ends.
     command: /bin/sh -c "while sleep 1000; do :; done"
+    expose:
+      - 8000
   wes-server:
     volumes:
       - ./example-assets/data:/work/data

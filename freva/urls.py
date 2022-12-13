@@ -14,12 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
+
 from freva import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", views.index, name="index"),
     path("api/getjson", views.get_json, name="get_json"),
-    path("history/", include(("history.urls", "history"), namespace="history")),
+    path("api/", include(("workflows.urls", "workflows"), namespace="workflows")),
+    path("api/", include(("runs.urls", "runs"), namespace="runs")),
 ]

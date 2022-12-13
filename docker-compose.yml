@@ -9,7 +9,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker:/var/lib/docker
-      - /tmp/toil-workflows:/tmp/toil-workflows
+      - ./freva-workdir/toil:/tmp/toil-workflows
     command: celery --broker=amqp://guest:guest@rabbitmq:5672// -A toil.server.celery_app worker --loglevel=INFO
     depends_on:
       - rabbitmq
@@ -22,16 +22,18 @@ services:
       MYSQL_ROOT_PASSWORD: test_password_please_ignore
     ports:
       - "3306:3306"
+    volumes:
+      - ./.devcontainer/mysql:/docker-entrypoint-initdb.d
   wes-server:
     build: toil-docker
     volumes:
-      - /tmp/toil-workflows:/tmp/toil-workflows
+      - ./freva-workdir/toil:/tmp/toil-workflows
     environment:
       - TOIL_WES_BROKER_URL=amqp://guest:guest@rabbitmq:5672//
     # TODO: toil server ignores --host if not run in debug even though the code would suggest it shouldn't
-    command: toil server --host 0.0.0.0 --port 8000 --debug --work_dir /tmp/toil-workflows
-    expose:
-      - 8000
+    command: toil server --host 0.0.0.0 --port 8001 --debug --work_dir /tmp/toil-workflows
+    ports:
+      - "8001:8001"
     depends_on:
       - rabbitmq
       - celery

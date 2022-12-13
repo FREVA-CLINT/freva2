@@ -1,4 +1,3 @@
-
 lint: mypy pylint
 
 mypy:
