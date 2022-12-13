@@ -21,6 +21,6 @@ class CreateRunSerializer(Serializer[dict[str, Any]]):  # type: ignore [misc]
 
 class RunSerializer(Serializer[Union[Run, Iterable[Run]]]):
     id: CharField = CharField()
-    workflow: SlugRelatedField[Workflow] = SlugRelatedField(
+    workflow: "SlugRelatedField[Workflow]" = SlugRelatedField(
         many=False, read_only=True, slug_field="name"
     )
