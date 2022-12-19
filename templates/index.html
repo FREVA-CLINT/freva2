@@ -3,6 +3,7 @@
 <html>
     <head>
         {% render_bundle 'main' 'css' %}
+        {{menu | json_script:"freva_menu"}}
     </head>
     <body>
       <div id="root">

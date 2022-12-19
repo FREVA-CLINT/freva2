@@ -138,6 +138,12 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    )
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -156,8 +162,21 @@ USE_TZ = True
 
 STATIC_ROOT = "static_root/"
 STATIC_URL = "static/"
-STATICFILES_DIRS = ["dist"]
+STATICFILES_DIRS = ["dist", "static"]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+class MenuEntries(TypedDict):
+    title: str
+    url: str
+
+
+MENU_ENTRIES: list[MenuEntries] = [
+    {"title": "Home", "url": "/"},
+    {"title": "Workflows", "url": "/workflows"},
+    {"title": "Results", "url": "/results"},
+    {"title": "History", "url": "/history"},
+]
