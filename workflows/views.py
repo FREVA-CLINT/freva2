@@ -1,13 +1,15 @@
-from typing import TYPE_CHECKING, Sequence, Union
+from typing import TYPE_CHECKING, Sequence, Union, Optional
 
 from django.http import FileResponse
+from django.contrib.auth.models import User
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, NotAuthenticated
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
 
 from freva.requests import authed_user
 
@@ -21,20 +23,26 @@ if TYPE_CHECKING:
     )
 
 
-class WorkflowViewSet(ViewSet):
+class WorkflowList(APIView):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
-    def list(self, _request: Request) -> Response:
-        workflows = Workflow.objects.all()
+    def get(
+        self, _request: Request, user_id: str, _format: Optional[str] = None
+    ) -> Response:
+        user = User.objects.filter(username=user_id).first()
+        if user is None:
+            raise NotFound()
+        workflows = Workflow.objects.filter(author=user)
         return Response(WorkflowSerializer(workflows, many=True).data)
 
-    def retrieve(self, _request: Request, pk: str) -> Response:
-        workflow = Workflow.objects.filter(name=pk).first()
-        if workflow is None:
-            raise NotFound()
-        return Response(WorkflowSerializer(workflow).data)
-
-    def create(self, request: Request) -> Response:
+    def post(
+        self, request: Request, user_id: str, _format: Optional[str] = None
+    ) -> Response:
+        user = authed_user(request)
+        if user.username != user_id:
+            # TODO: not accurate, this is an authorization issue but maybe this should
+            # be handled via permission_classes
+            raise NotAuthenticated()
         form = WorkflowUploadForm(request.POST, request.FILES)
         # TODO: check that the workflow is valid
         # TODO: either get the cwl file version from the user or extract from the file
@@ -44,13 +52,41 @@ class WorkflowViewSet(ViewSet):
             )
         workflow = Workflow(data=form.cleaned_data["file"])
         workflow.name = form.cleaned_data["name"]
-        workflow.author = authed_user(request)
+        workflow.author = user
         workflow.save()
         return Response(status=status.HTTP_201_CREATED)
 
-    @action(detail=True, methods=["get"])
-    def workflow(self, _request: Request, pk: str) -> Union[Response, FileResponse]:
-        workflow = Workflow.objects.filter(name=pk).first()
+
+class WorkflowDetail(APIView):
+    permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
+
+    def get(
+        self,
+        _request: Request,
+        user_id: str,
+        workflow_id: str,
+        _format: Optional[str] = None,
+    ) -> Response:
+        workflow = Workflow.objects.filter(name=workflow_id, author=user_id).first()
+        if workflow is None:
+            raise NotFound()
+        return Response(WorkflowSerializer(workflow).data)
+
+
+class WorkflowFile(APIView):
+    permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
+
+    def get(
+        self,
+        request: Request,
+        user_id: str,
+        workflow_id: str,
+        format: Optional[str] = None,
+    ) -> FileResponse:
+        user = authed_user(request)
+        if user.username != user_id:
+            raise NotAuthenticated()
+        workflow = Workflow.objects.filter(name=workflow_id, author=user).first()
         if workflow is None:
             raise NotFound()
         return FileResponse(workflow.data.file)
