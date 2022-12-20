@@ -46,8 +46,10 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install Dependencies
         run: |
-          python -m pip install poetry
+          pip install poetry
           poetry install
       - name: Run Tests
-        run: poetry run python manage.py test
+        run: poetry run python manage.py test --keepdb
+      - name: Tear down docker compose
+        run: docker compose down
 

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 from typing import TypedDict
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,7 +82,7 @@ WSGI_APPLICATION = "freva.wsgi.application"
 db_name = "freva"
 db_user = "freva"
 db_passwd = "T3st"
-db_host = "mysql"
+db_host = os.environ.get("FREVA_DATABASE_HOST", "127.0.0.1")
 db_port = 3306
 
 DATABASES = {
@@ -104,7 +105,10 @@ class ToilSettings(TypedDict):
     port: int
 
 
-TOIL: ToilSettings = {"host": "wes-server", "port": 8001}
+TOIL: ToilSettings = {
+    "host": os.environ.get("FREVA_WES_HOST", "localhost"),
+    "port": 8001,
+}
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
