@@ -4,7 +4,6 @@ from rest_framework.routers import DefaultRouter
 
 from workflows import views
 
-
 urlpatterns = [
     path("<str:user_id>/workflows", views.WorkflowList.as_view(), name="workflow-list"),
     path(
