@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 
 from freva.requests import authed_user
 
-from .forms import WorkflowUploadForm
+from .forms import WorkflowUploadForm, WorkflowUpdateForm
 from .models import Workflow
 from .serializers import WorkflowSerializer
 
@@ -50,6 +50,10 @@ class WorkflowList(APIView):
             return Response(
                 exception=True, status=status.HTTP_400_BAD_REQUEST, data=form.errors
             )
+        already_exists = Workflow.objects.filter(name=form.cleaned_data["name"]).first()
+        if not already_exists is None:
+            # Don't allow duplicate workflows of the same name
+            return Response(exception=True, status=status.HTTP_409_CONFLICT)
         workflow = Workflow(data=form.cleaned_data["file"])
         workflow.name = form.cleaned_data["name"]
         workflow.author = user
@@ -90,3 +94,27 @@ class WorkflowFile(APIView):
         if workflow is None:
             raise NotFound()
         return FileResponse(workflow.data.file)
+
+    def put(
+        self,
+        request: Request,
+        user_id: str,
+        workflow_id: str,
+        _format: Optional[str] = None,
+    ) -> Response:
+        user = authed_user(request)
+        if user.username != user_id:
+            raise NotAuthenticated()
+        workflow = Workflow.objects.filter(name=workflow_id, author=user).first()
+        if workflow is None:
+            raise NotFound()
+        form = WorkflowUpdateForm(request.POST, request.FILES)
+        # TODO: check that the workflow is valid
+        # TODO: either get the cwl file version from the user or extract from the file
+        if not form.is_valid():
+            return Response(
+                exception=True, status=status.HTTP_400_BAD_REQUEST, data=form.errors
+            )
+        workflow.data = form.cleaned_data["file"]
+        workflow.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)

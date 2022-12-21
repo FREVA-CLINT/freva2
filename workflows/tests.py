@@ -13,8 +13,7 @@ class WorkflowTests(APITestCase):
         User.objects.create(username="user2")
 
     def test_create(self) -> None:
-        user = User.objects.filter(username="user1").first()
-        assert not user is None
+        user = self.get_user("user1")
 
         create_url = reverse("workflows:workflow-list", args=[user.username])
         workflow_file = open("example-assets/workflows/hello-world.cwl", "r")
@@ -33,8 +32,8 @@ class WorkflowTests(APITestCase):
         assert list_resp.json()[0]["name"] == "hello-world"
 
     def test_workflow_namespacing(self) -> None:
-        user = User.objects.filter(username="user1").first()
-        assert not user is None
+        user = self.get_user("user1")
+
         create_url = reverse("workflows:workflow-list", args=[user.username])
         workflow_file = open("example-assets/workflows/hello-world.cwl", "r")
         self.client.force_authenticate(user)
@@ -56,8 +55,7 @@ class WorkflowTests(APITestCase):
         assert len(list_resp.json()) == 0
 
     def test_workflow_file(self) -> None:
-        user = User.objects.filter(username="user1").first()
-        assert not user is None
+        user = self.get_user("user1")
 
         create_url = reverse("workflows:workflow-list", args=[user.username])
         self.client.force_authenticate(user)
@@ -80,3 +78,91 @@ class WorkflowTests(APITestCase):
             file_str += chunk
         with open("example-assets/workflows/hello-world.cwl", "rb") as workflow_file:
             assert file_str == workflow_file.read()
+
+    def test_create_duplicate_workflow(self) -> None:
+        user = self.get_user("user1")
+
+        create_url = reverse("workflows:workflow-list", args=[user.username])
+        self.client.force_authenticate(user)
+        with open("example-assets/workflows/hello-world.cwl", "r") as workflow_file:
+            response = self.client.post(
+                create_url,
+                data={
+                    "name": "hello-world",
+                    "file": workflow_file,
+                },
+            )
+        assert response.status_code == status.HTTP_201_CREATED
+
+        self.client.force_authenticate(user)
+        with open("example-assets/workflows/hello-world.cwl", "r") as workflow_file:
+            response = self.client.post(
+                create_url,
+                data={
+                    "name": "hello-world",
+                    "file": workflow_file,
+                },
+            )
+        assert response.status_code == status.HTTP_409_CONFLICT
+
+    def test_update_workflow_file(self) -> None:
+        user = self.get_user("user1")
+        self.client.force_authenticate(user)
+        self.add_workflow(
+            user, "hello-world", "example-assets/workflows/hello-world.cwl"
+        )
+
+        file_url = reverse(
+            "workflows:workflow-file", args=[user.username, "hello-world"]
+        )
+        file_response: FileResponse = self.client.get(file_url)
+        file_str = b""
+        for chunk in file_response.streaming_content:
+            file_str += chunk
+        with open("example-assets/workflows/hello-world.cwl", "rb") as workflow_file:
+            assert file_str == workflow_file.read()
+
+        update_url = reverse(
+            "workflows:workflow-file", args=[user.username, "hello-world"]
+        )
+        with open("example-assets/workflows/cdo.cwl", "r") as updated_file:
+            resp = self.client.put(
+                update_url,
+                data={
+                    "file": updated_file,
+                },
+            )
+            assert resp.status_code == status.HTTP_204_NO_CONTENT
+
+        file_url = reverse(
+            "workflows:workflow-file", args=[user.username, "hello-world"]
+        )
+        file_response = self.client.get(file_url)
+        file_str = b""
+        for chunk in file_response.streaming_content:
+            file_str += chunk
+        with open("example-assets/workflows/cdo.cwl", "rb") as workflow_file:
+            assert file_str == workflow_file.read()
+
+    def get_user(self, name: str) -> User:
+        """Convenience method to get a user by username and ensure it exists or panic
+        to reduce boilerplate in the tests
+        """
+        user = User.objects.filter(username=name).first()
+        assert not user is None
+        return user
+
+    def add_workflow(self, user: User, name: str, workflow_filename: str) -> None:
+        """Adds the workflow file indicated to the system as belonging to the given user
+        and panic if this fails
+        """
+        create_url = reverse("workflows:workflow-list", args=[user.username])
+        with open(workflow_filename, "r") as workflow_file:
+            response = self.client.post(
+                create_url,
+                data={
+                    "name": name,
+                    "file": workflow_file,
+                },
+            )
+        assert response.status_code == status.HTTP_201_CREATED
