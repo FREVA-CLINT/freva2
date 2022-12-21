@@ -14,18 +14,11 @@ class WorkflowTests(APITestCase):
 
     def test_create(self) -> None:
         user = self.get_user("user1")
-
-        create_url = reverse("workflows:workflow-list", args=[user.username])
-        workflow_file = open("example-assets/workflows/hello-world.cwl", "r")
         self.client.force_authenticate(user)
-        response = self.client.post(
-            create_url,
-            data={
-                "name": "hello-world",
-                "file": workflow_file,
-            },
+
+        self.add_workflow(
+            user, "hello-world", "example-assets/workflows/hello-world.cwl"
         )
-        assert response.status_code == status.HTTP_201_CREATED
 
         list_url = reverse("workflows:workflow-list", args=[user.username])
         list_resp = self.client.get(list_url)
@@ -33,21 +26,13 @@ class WorkflowTests(APITestCase):
 
     def test_workflow_namespacing(self) -> None:
         user = self.get_user("user1")
-
-        create_url = reverse("workflows:workflow-list", args=[user.username])
-        workflow_file = open("example-assets/workflows/hello-world.cwl", "r")
         self.client.force_authenticate(user)
-        response = self.client.post(
-            create_url,
-            data={
-                "name": "hello-world",
-                "file": workflow_file,
-            },
-        )
-        assert response.status_code == status.HTTP_201_CREATED
 
-        other_user = User.objects.filter(username="user2").first()
-        assert not other_user is None
+        self.add_workflow(
+            user, "hello-world", "example-assets/workflows/hello-world.cwl"
+        )
+
+        other_user = self.get_user("user2")
 
         self.client.force_authenticate(other_user)
         list_url = reverse("workflows:workflow-list", args=[other_user.username])
@@ -56,18 +41,11 @@ class WorkflowTests(APITestCase):
 
     def test_workflow_file(self) -> None:
         user = self.get_user("user1")
-
-        create_url = reverse("workflows:workflow-list", args=[user.username])
         self.client.force_authenticate(user)
-        with open("example-assets/workflows/hello-world.cwl", "r") as workflow_file:
-            response = self.client.post(
-                create_url,
-                data={
-                    "name": "hello-world",
-                    "file": workflow_file,
-                },
-            )
-        assert response.status_code == status.HTTP_201_CREATED
+
+        self.add_workflow(
+            user, "hello-world", "example-assets/workflows/hello-world.cwl"
+        )
 
         file_url = reverse(
             "workflows:workflow-file", args=[user.username, "hello-world"]
@@ -81,20 +59,13 @@ class WorkflowTests(APITestCase):
 
     def test_create_duplicate_workflow(self) -> None:
         user = self.get_user("user1")
+        self.client.force_authenticate(user)
+
+        self.add_workflow(
+            user, "hello-world", "example-assets/workflows/hello-world.cwl"
+        )
 
         create_url = reverse("workflows:workflow-list", args=[user.username])
-        self.client.force_authenticate(user)
-        with open("example-assets/workflows/hello-world.cwl", "r") as workflow_file:
-            response = self.client.post(
-                create_url,
-                data={
-                    "name": "hello-world",
-                    "file": workflow_file,
-                },
-            )
-        assert response.status_code == status.HTTP_201_CREATED
-
-        self.client.force_authenticate(user)
         with open("example-assets/workflows/hello-world.cwl", "r") as workflow_file:
             response = self.client.post(
                 create_url,
