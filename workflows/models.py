@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User, AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, User
 from django.db.models import (
     DO_NOTHING,
     CharField,

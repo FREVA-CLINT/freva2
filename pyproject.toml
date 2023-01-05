@@ -46,6 +46,9 @@ plugins = ["mypy_drf_plugin.main"]
 [tool.django-stubs]
 django_settings_module = "freva.settings"
 
+[tool.isort]
+profile = "black"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
