@@ -39,6 +39,21 @@ class WorkflowTests(APITestCase):
         list_resp = self.client.get(list_url)
         assert len(list_resp.json()) == 0
 
+    def test_workflow_detail(self) -> None:
+        user = self.get_user("user1")
+        self.client.force_authenticate(user)
+        self.add_workflow(
+            user, "hello-world", "example-assets/workflows/hello-world.cwl"
+        )
+
+        detail_url = reverse(
+            "workflows:workflow-detail", args=[user.username, "hello-world"]
+        )
+        detail_resp = self.client.get(detail_url)
+        assert detail_resp.status_code == status.HTTP_200_OK
+        details = detail_resp.json()
+        assert details["name"] == "hello-world"
+
     def test_workflow_file(self) -> None:
         user = self.get_user("user1")
         self.client.force_authenticate(user)

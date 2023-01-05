@@ -27,19 +27,19 @@ class WorkflowList(APIView):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
     def get(
-        self, _request: Request, user_id: str, _format: Optional[str] = None
+        self, _request: Request, username: str, _format: Optional[str] = None
     ) -> Response:
-        user = User.objects.filter(username=user_id).first()
+        user = User.objects.filter(username=username).first()
         if user is None:
             raise NotFound()
         workflows = Workflow.objects.filter(author=user)
         return Response(WorkflowSerializer(workflows, many=True).data)
 
     def post(
-        self, request: Request, user_id: str, _format: Optional[str] = None
+        self, request: Request, username: str, _format: Optional[str] = None
     ) -> Response:
         user = authed_user(request)
-        if user.username != user_id:
+        if user.username != username:
             # TODO: not accurate, this is an authorization issue but maybe this should
             # be handled via permission_classes
             raise NotAuthenticated()
@@ -66,12 +66,17 @@ class WorkflowDetail(APIView):
 
     def get(
         self,
-        _request: Request,
-        user_id: str,
+        request: Request,
+        username: str,
         workflow_id: str,
         _format: Optional[str] = None,
     ) -> Response:
-        workflow = Workflow.objects.filter(name=workflow_id, author=user_id).first()
+        user = authed_user(request)
+        if user.username != username:
+            # TODO: not accurate, this is an authorization issue but maybe this should
+            # be handled via permission_classes
+            raise NotAuthenticated()
+        workflow = Workflow.objects.filter(name=workflow_id, author=user).first()
         if workflow is None:
             raise NotFound()
         return Response(WorkflowSerializer(workflow).data)
@@ -83,12 +88,12 @@ class WorkflowFile(APIView):
     def get(
         self,
         request: Request,
-        user_id: str,
+        username: str,
         workflow_id: str,
         format: Optional[str] = None,
     ) -> FileResponse:
         user = authed_user(request)
-        if user.username != user_id:
+        if user.username != username:
             raise NotAuthenticated()
         workflow = Workflow.objects.filter(name=workflow_id, author=user).first()
         if workflow is None:
@@ -98,12 +103,12 @@ class WorkflowFile(APIView):
     def put(
         self,
         request: Request,
-        user_id: str,
+        username: str,
         workflow_id: str,
         _format: Optional[str] = None,
     ) -> Response:
         user = authed_user(request)
-        if user.username != user_id:
+        if user.username != username:
             raise NotAuthenticated()
         workflow = Workflow.objects.filter(name=workflow_id, author=user).first()
         if workflow is None:
