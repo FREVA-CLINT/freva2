@@ -1,15 +1,15 @@
-from typing import TYPE_CHECKING, Sequence, Union, Optional
+from typing import TYPE_CHECKING, Optional, Sequence, Union
 
-from django.http import FileResponse
 from django.contrib.auth.models import User
+from django.http import FileResponse
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import NotFound, NotAuthenticated
+from rest_framework.exceptions import NotAuthenticated, NotFound
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.viewsets import ViewSet
 from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 
 from freva.requests import authed_user
 

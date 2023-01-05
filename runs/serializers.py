@@ -1,4 +1,5 @@
-from typing import Any, Union, Iterable
+from typing import Any, Iterable, Union
+
 from rest_framework.serializers import (
     CharField,
     DictField,
@@ -7,6 +8,7 @@ from rest_framework.serializers import (
 )
 
 from workflows.models import Workflow
+
 from .models import Run
 
 
