@@ -6,6 +6,8 @@ services:
     hostname: rabbitmq
   celery:
     build: toil-docker
+    environment:
+      - TMPDIR=/tmp/toil-workdir
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker:/var/lib/docker
