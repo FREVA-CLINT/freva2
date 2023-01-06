@@ -1,6 +1,5 @@
 from io import BytesIO
-from typing import Optional, Any, TypedDict
-from enum import StrEnum
+from typing import Any, Optional
 
 import requests
 
