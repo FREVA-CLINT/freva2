@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 import os
 from pathlib import Path
-from typing import TypedDict
+from typing import TypedDict, Optional
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -103,11 +103,19 @@ MEDIA_ROOT = "/tmp/freva"
 class ToilSettings(TypedDict):
     host: str
     port: int
+    workflow_engine_settings: dict[str, Optional[str]]
 
 
 TOIL: ToilSettings = {
     "host": os.environ.get("FREVA_WES_HOST", "localhost"),
     "port": 8001,
+    # these are passed directly to toil-cwl-runner without validation.
+    # Any options which should be boolean flags (i.e. take no value) MUST be given a
+    # value of None. A value of "" will result in --flag-name="" which won't work.
+    "workflow_engine_settings": {
+        "--clean": "never",
+        "--stats": None,
+    },
 }
 
 REST_FRAMEWORK = {

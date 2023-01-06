@@ -30,7 +30,11 @@ class RunViewSet(ViewSet):
         return Response(RunSerializer(runs, many=True).data)
 
     def create(self, request: Request) -> Response:
-        toil = ToilClient(settings.TOIL["host"], settings.TOIL["port"])
+        toil = ToilClient(
+            settings.TOIL["host"],
+            settings.TOIL["port"],
+            settings.TOIL["workflow_engine_settings"],
+        )
 
         data = JSONParser().parse(request)
         serializer = CreateRunSerializer(data=data)
@@ -51,12 +55,8 @@ class RunViewSet(ViewSet):
         contents = workflow.data.read()
         workflow_files = [(workflow.data.name, contents)]
         run_response = toil.run_workflow(
-            RunWorkflow(
-                workflow_url=workflow.data.name,
-                workflow_type="cwl",
-                workflow_type_version="v1.2",
-                workflow_params=opts["inputs"],
-            ),
+            workflow.data.name,
+            opts["inputs"],
             workflow_files,
         )
         run = Run(id=run_response.run_id, workflow=workflow)

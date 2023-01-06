@@ -33,7 +33,7 @@
       "settings": {
         "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
         "python.linting.enabled": true,
-        "python.linting.pylintEnabled": true,
+        "python.linting.pylintEnabled": false,
         "python.linting.mypyEnabled": true,
         "python.formatting.autopep8Path": "${workspaceFolder}/.venv/bin/autopep8",
         "python.formatting.blackPath": "${workspaceFolder}/.venv/bin/black",
@@ -43,7 +43,9 @@
         "python.linting.mypyPath": "${workspaceFolder}/.venv/bin/mypy",
         "python.linting.pycodestylePath": "${workspaceFolder}/.venv/bin/pycodestyle",
         "python.linting.pydocstylePath": "${workspaceFolder}/.venv/bin/pydocstyle",
-        "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint"
+        "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint",
+        "editor.formatOnSave": true,
+        "isort.check": true
       },
       // Add the IDs of extensions you want installed when the container is created.
       "extensions": [
