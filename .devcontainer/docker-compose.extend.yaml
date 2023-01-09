@@ -5,7 +5,7 @@ services:
     volumes:
       # Mounts the project folder to '/workspace'. While this file is in .devcontainer,
       # mounts are relative to the first file in the list, which is a level up.
-      - ./freva-workdir:/tmp/freva
+      - ${PWD}/freva-workdir:/tmp/freva
       - .:/workspace:cached
     env_file: .devcontainer/config.env
 
@@ -15,7 +15,7 @@ services:
       - 8000
   wes-server:
     volumes:
-      - ./example-assets/data:/work/data
+      - ${PWD}/example-assets/data:/work/data
   celery:
     volumes:
-      - ./example-assets/data:/work/data
+      - ${PWD}/example-assets/data:/work/data
