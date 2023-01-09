@@ -15,17 +15,18 @@ class ToilClient:
     url: str
     engine_parameters: dict[str, Optional[str]]
 
-    def __init__(
-        self, host: str, port: int, settings: Optional[dict[str, Optional[str]]] = None
-    ):
+    def __init__(self, host: str, port: int, settings: dict[str, Optional[str]]):
         self.url = f"{host}:{port}"
-        if settings:
-            self.engine_parameters = settings
-        else:
-            self.engine_parameters = {}
+        self.engine_parameters = settings
 
-    def _build_url(self, suffix: str) -> str:
+    def _build_wes_url(self, suffix: str) -> str:
         return f"http://{self.url}/ga4gh/wes/v1/{suffix}"
+
+    def _build_toil_url(self, suffix: str) -> str:
+        """Build url for endpoints that are specific to toil and not part of the GA4GH
+        WES spec
+        """
+        return f"http://{self.url}/toil/wes/v1/{suffix}"
 
     def run_workflow(  # type: ignore[misc]
         self,
@@ -48,13 +49,23 @@ class ToilClient:
             workflow_engine_parameters=self.engine_parameters,
         )
         resp = requests.post(
-            self._build_url("runs"),
+            self._build_wes_url("runs"),
             data=payload.toil_param_format(),
             files=files,
         )
         return StartRun.parse_raw(resp.text)
 
     def get_run_log(self, run_id: str) -> RunInfo:
-        url = f"{self._build_url('runs')}/{run_id}"
+        url = f"{self._build_wes_url('runs')}/{run_id}"
         resp = requests.get(url)
         return RunInfo.parse_raw(resp.text)
+
+    def get_stdout(self, run_id: str) -> str:
+        url = f"{self._build_toil_url('logs')}/{run_id}/stdout"
+        resp = requests.get(url)
+        return resp.text
+
+    def get_stderr(self, run_id: str) -> str:
+        url = f"{self._build_toil_url('logs')}/{run_id}/stderr"
+        resp = requests.get(url)
+        return resp.text

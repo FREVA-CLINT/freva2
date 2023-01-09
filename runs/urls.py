@@ -1,9 +1,16 @@
 from django.contrib import admin
-from rest_framework.routers import DefaultRouter
+from django.urls import include, path
 
 from runs import views
 
-router = DefaultRouter()
-router.register("runs", views.RunViewSet, basename="runs")
-
-urlpatterns = router.urls
+urlpatterns = [
+    path("runs/", views.RunList.as_view(), name="run-list"),
+    path(
+        "runs/<str:run_id>/",
+        views.RunDetail.as_view(),
+        name="run-detail",
+    ),
+    path("runs/<str:run_id>/status", views.RunStatus.as_view(), name="run-status"),
+    path("runs/<str:run_id>/stdout", views.RunStdout.as_view(), name="run-stdout"),
+    path("runs/<str:run_id>/stderr", views.RunStderr.as_view(), name="run-stderr"),
+]

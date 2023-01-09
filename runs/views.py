@@ -8,6 +8,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
+from rest_framework.views import APIView
 
 from freva import settings
 from toil.client import RunWorkflow, ToilClient
@@ -22,14 +23,14 @@ if TYPE_CHECKING:
     )
 
 
-class RunViewSet(ViewSet):
+class RunList(APIView):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
-    def list(self, _request: Request) -> Response:
+    def get(self, _request: Request) -> Response:
         runs = Run.objects.all()
         return Response(RunSerializer(runs, many=True).data)
 
-    def create(self, request: Request) -> Response:
+    def post(self, request: Request) -> Response:
         toil = ToilClient(
             settings.TOIL["host"],
             settings.TOIL["port"],
@@ -63,17 +64,60 @@ class RunViewSet(ViewSet):
         run.save()
         return Response(RunSerializer(run).data)
 
-    def retrieve(self, _request: Request, pk: str) -> Response:
-        run = Run.objects.filter(id=pk).first()
+
+class RunDetail(APIView):
+    permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
+
+    def get(self, _request: Request, run_id: str) -> Response:
+        run = Run.objects.filter(id=run_id).first()
         if run is None:
             raise NotFound
         return Response(RunSerializer(run).data)
 
-    @action(detail=True, methods=["get"])
-    def status(self, _request: Request, pk: str) -> Response:
-        toil = ToilClient(settings.TOIL["host"], settings.TOIL["port"])
-        run = Run.objects.filter(id=pk).first()
+
+class RunStatus(APIView):
+    permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
+
+    def get(self, _request: Request, run_id: str) -> Response:
+        toil = ToilClient(
+            settings.TOIL["host"],
+            settings.TOIL["port"],
+            settings.TOIL["workflow_engine_settings"],
+        )
+        run = Run.objects.filter(id=run_id).first()
         if run is None:
             raise NotFound
         toil_info = toil.get_run_log(run.id)
         return Response(toil_info.dict())
+
+
+class RunStdout(APIView):
+    permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
+
+    def get(self, _request: Request, run_id: str) -> Response:
+        toil = ToilClient(
+            settings.TOIL["host"],
+            settings.TOIL["port"],
+            settings.TOIL["workflow_engine_settings"],
+        )
+        run = Run.objects.filter(id=run_id).first()
+        if run is None:
+            raise NotFound
+        stdout = toil.get_stdout(run_id)
+        return Response(stdout)
+
+
+class RunStderr(APIView):
+    permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
+
+    def get(self, _request: Request, run_id: str) -> Response:
+        toil = ToilClient(
+            settings.TOIL["host"],
+            settings.TOIL["port"],
+            settings.TOIL["workflow_engine_settings"],
+        )
+        run = Run.objects.filter(id=run_id).first()
+        if run is None:
+            raise NotFound
+        stderr = toil.get_stderr(run_id)
+        return Response(stderr)
