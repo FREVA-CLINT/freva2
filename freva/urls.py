@@ -15,13 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include, re_path
-from rest_framework_simplejwt.views import (
+from rest_framework_simplejwt.views import (  # type: ignore
     TokenObtainPairView,
     TokenRefreshView,
 )
 
 from freva import views
+from freva import settings
 
+handler404 = views.error_404
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -30,6 +32,9 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/", include(("workflows.urls", "workflows"), namespace="workflows")),
     path("api/", include(("runs.urls", "runs"), namespace="runs")),
-    path("", views.index, name="index"),
-    re_path(r"^.*$", views.index, name="index"),
+    re_path(
+        rf'^({"|".join(settings.REACT_ROUTES)})?$',
+        views.IndexView.as_view(),
+        name="index2",
+    ),
 ]

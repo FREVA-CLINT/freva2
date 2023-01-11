@@ -156,7 +156,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -174,9 +173,15 @@ class MenuEntries(TypedDict):
     url: str
 
 
+# This dict contains all entries which have to appear in the navbar on the frontend
 MENU_ENTRIES: list[MenuEntries] = [
-    {"title": "Home", "url": "/"},
-    {"title": "Workflows", "url": "/workflows"},
-    {"title": "Results", "url": "/results"},
-    {"title": "History", "url": "/history"},
+    {"title": "Home", "url": ""},
+    {"title": "Workflows", "url": "workflows"},
+    {"title": "Results", "url": "results"},
+    {"title": "History", "url": "history"},
 ]
+
+
+# This is a list containing all frontend-routes. We need it so that we can provide
+# proper status codes for non-existing urls
+REACT_ROUTES = ["runs(/.+)?"] + [x["url"] for x in MENU_ENTRIES]
