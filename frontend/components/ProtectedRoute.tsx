@@ -14,7 +14,6 @@ export const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
     return <Navigate to="/" />;
   }
   if (!username) {
-    console.log("LoginView render");
     return <LoginView handleClose={handleClose} isOpen={open} />;
   }
 

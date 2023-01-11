@@ -18,7 +18,6 @@ instance.interceptors.request.use(
     if (token) {
       config.headers.Authorization = "Bearer " + token;
     }
-    console.log(config);
     return config;
   },
   (error) => {
@@ -45,8 +44,8 @@ instance.interceptors.response.use(
         originalConfig._retry = true;
 
         try {
-          const rs = await instance.post("/api/token/refresh", {
-            refreshToken: TokenService.getLocalRefreshToken(),
+          const rs = await instance.post("/api/token/refresh/", {
+            refresh: TokenService.getLocalRefreshToken(),
           });
 
           const { access } = rs.data as TToken;

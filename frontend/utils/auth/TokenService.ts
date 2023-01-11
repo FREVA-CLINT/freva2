@@ -21,7 +21,7 @@ class TokenService {
     const user = this.getUser();
     if (user) {
       user.access = token;
-      localStorage.setItem("user", JSON.stringify(token));
+      localStorage.setItem("user", JSON.stringify(user));
     }
   }
 
