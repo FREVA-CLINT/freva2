@@ -78,15 +78,15 @@ your editor supports it. Otherwise you can use docker compose to run the databas
 Python environment and its dependencies with
 
 ```sh
-docker compose up -d
-poetry shell
-poetry install
+❯ docker compose up -d
+❯ poetry shell
+❯ poetry install
 # initialize the database tables
-python manage.py migrate
+❯ python manage.py migrate
 # create an admin user, fill in whatever values you want for username and password
-python manage.py createsuperuser
+❯ python manage.py createsuperuser
 ...
-python manage.py runserver
+❯ python manage.py runserver
 ```
 
 The Freva server will listen on `http://localhost:8000`. Mysql will be accessible on `localhost:3306/freva`. If you need
@@ -98,7 +98,7 @@ debugging.
 The API can be tested via Django's built-in testing feature.
 
 ```sh
-python manage.py test
+❯ python manage.py test
 ```
 
 # Workflow Flow
