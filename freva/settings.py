@@ -109,9 +109,10 @@ class ToilSettings(TypedDict):
 TOIL: ToilSettings = {
     "host": os.environ.get("FREVA_WES_HOST", "localhost"),
     "port": 8001,
-    # these are passed directly to toil-cwl-runner without validation.
+    # these are passed directly to toil-cwl-runner without validation or processing.
     # Any options which should be boolean flags (i.e. take no value) MUST be given a
     # value of None. A value of "" will result in --flag-name="" which won't work.
+    # See: https://toil.readthedocs.io/en/latest/running/cwl.html#detailed-usage-instructions
     "workflow_engine_settings": {
         "--clean": "never",
         "--stats": None,
