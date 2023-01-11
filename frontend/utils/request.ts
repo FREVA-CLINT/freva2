@@ -31,7 +31,7 @@ instance.interceptors.response.use(
   },
   async (err: AxiosError) => {
     const originalConfig = err.config as AxiosError & {
-      _retry?: boolean;
+      retry?: boolean;
       url: string;
     };
     if (
@@ -40,8 +40,8 @@ instance.interceptors.response.use(
       err.response
     ) {
       // Access Token was expired
-      if (err.response.status === 401 && !originalConfig._retry) {
-        originalConfig._retry = true;
+      if (err.response.status === 401 && !originalConfig.retry) {
+        originalConfig.retry = true;
 
         try {
           const rs = await instance.post("/api/token/refresh/", {
