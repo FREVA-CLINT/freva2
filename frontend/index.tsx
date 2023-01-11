@@ -9,6 +9,7 @@ import Header from "./components/Header/Header";
 import { Container } from "react-bootstrap";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { store } from "./utils/store";
+import WorkflowsPage from "pages/workflows/Workflows";
 
 const App = () => {
   return (
@@ -35,7 +36,7 @@ const router = createBrowserRouter([
         path: "workflows",
         element: (
           <ProtectedRoute>
-            <div>TODO: Workflows</div>
+            <WorkflowsPage />
           </ProtectedRoute>
         ),
       },
