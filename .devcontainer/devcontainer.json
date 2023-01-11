@@ -44,6 +44,7 @@
         "python.linting.pycodestylePath": "${workspaceFolder}/.venv/bin/pycodestyle",
         "python.linting.pydocstylePath": "${workspaceFolder}/.venv/bin/pydocstyle",
         "python.linting.pylintPath": "${workspaceFolder}/.venv/bin/pylint",
+        "eslint.workingDirectories": [{ "mode": "auto" }],
         "editor.formatOnSave": true,
         "isort.check": true
       },

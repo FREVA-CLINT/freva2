@@ -14,14 +14,25 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
+from rest_framework_simplejwt.views import (  # type: ignore
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
-from freva import views
+from freva import settings, views
+
+handler404 = views.error_404
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.index, name="index"),
-    path("api/getjson", views.get_json, name="get_json"),
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/", include(("workflows.urls", "workflows"), namespace="workflows")),
     path("api/", include(("runs.urls", "runs"), namespace="runs")),
+    re_path(
+        rf'^({"|".join(settings.REACT_ROUTES)})?$',
+        views.IndexView.as_view(),
+        name="index",
+    ),
 ]

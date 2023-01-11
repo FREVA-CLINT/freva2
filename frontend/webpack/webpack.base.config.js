@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const LoadablePlugin = require("@loadable/webpack-plugin");
 const BundleTracker = require("webpack-bundle-tracker");
 const ESLintPlugin = require("eslint-webpack-plugin");
-
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const isProduction = process.env.NODE_ENV == "production";
 
 const ROOT_PATH = path.resolve(__dirname, "..");
@@ -68,6 +68,12 @@ const config = {
   },
   resolve: {
     extensions: [".tsx", ".ts", ".jsx", ".js"],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: path.resolve(ROOT_PATH, "tsconfig.json"),
+        extensions: [".ts", ".js", ".tsx"],
+      }),
+    ],
   },
 };
 

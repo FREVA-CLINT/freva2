@@ -1,18 +1,32 @@
 {
   "compilerOptions": {
+    "rootDir": "./",
     "allowSyntheticDefaultImports": true,
     "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",
+    "baseUrl": "./",
+    "paths": {
+      "@utils/*": ["utils/*"]
+    },
     "allowJs": true,
     "strict": true,
     "esModuleInterop": true,
     "isolatedModules": true,
-    "baseUrl": "./",
     "jsx": "react",
     "types": ["node", "react", "react-dom"],
     "noLib": false,
-    "lib": ["es2015", "es2017", "dom"]
+    "lib": ["es2015", "es2017", "dom"],
+    "plugins": [
+      {
+        "transform": "typescript-transform-paths"
+      },
+      {
+        "transform": "typescript-transform-paths",
+        "afterDeclarations": true
+      }
+    ]
   },
-  "include": ["./**/*.ts", "./**/*.tsx", "./**/*.d.ts"]
+  "include": ["./**/*.ts", "./**/*.tsx", "./**/*.d.ts"],
+  "exclude": ["node_modules", "**/node_modules/*"]
 }

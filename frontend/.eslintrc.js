@@ -1,9 +1,11 @@
 module.exports = {
+  root: true,
   parser: "@typescript-eslint/parser",
   plugins: ["@typescript-eslint", "react", "import"],
   parserOptions: {
     sourceType: "module",
     requireConfigFile: false,
+    project: [],
     ecmaFeatures: {
       jsx: true,
     },
@@ -15,7 +17,7 @@ module.exports = {
     },
     "import/resolver": {
       node: {
-        extensions: [".js", ".jsx"],
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
       },
       typescript: {
         alwaysTryTypes: true,
@@ -48,6 +50,8 @@ module.exports = {
           },
         ],
         "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "import/named": "off",
         "no-undef": "off",
       },
     },
