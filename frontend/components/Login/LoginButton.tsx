@@ -14,7 +14,7 @@ export default function LoginDialog() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
-  // User has logged of in another tab, remove the remaining user info in this tab
+  // User has logged off in another tab, remove the remaining user info in this tab
   useEffect(() => {
     if (!TokenService.getUsername() && username) {
       dispatch(logout());
