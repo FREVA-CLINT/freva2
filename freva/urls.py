@@ -34,6 +34,6 @@ urlpatterns = [
     re_path(
         rf'^({"|".join(settings.REACT_ROUTES)})?$',
         views.IndexView.as_view(),
-        name="index2",
+        name="index",
     ),
 ]
