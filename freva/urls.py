@@ -27,7 +27,6 @@ handler404 = views.error_404
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/getjson/", views.get_json, name="get_json"),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/", include(("workflows.urls", "workflows"), namespace="workflows")),
