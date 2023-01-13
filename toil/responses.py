@@ -34,11 +34,11 @@ class RunLog(BaseModel):
 
 class TaskLog(BaseModel):
     name: str
-    cmd: list[str]
-    start_time: str
-    end_time: str
-    stdout: str
-    stderr: str
+    cmd: Optional[list[str]]
+    start_time: Optional[str]
+    end_time: Optional[str]
+    stdout: Optional[str]
+    stderr: Optional[str]
     exit_code: int
 
 
