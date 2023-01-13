@@ -27,6 +27,9 @@ class WorkflowList(APIView):
     def get(
         self, _request: Request, username: str, _format: Optional[str] = None
     ) -> Response:
+        """
+        Lists all workflows created by the given user
+        """
         user = User.objects.filter(username=username).first()
         if user is None:
             raise NotFound()
@@ -36,6 +39,9 @@ class WorkflowList(APIView):
     def post(
         self, request: Request, username: str, _format: Optional[str] = None
     ) -> Response:
+        """
+        Creates a new workflow
+        """
         user = authed_user(request)
         if user.username != username:
             # TODO: not accurate, this is an authorization issue but maybe this should
@@ -69,6 +75,8 @@ class WorkflowDetail(APIView):
         workflow_id: str,
         _format: Optional[str] = None,
     ) -> Response:
+        """ Gets the metadata for a workflow
+        """
         user = authed_user(request)
         if user.username != username:
             # TODO: not accurate, this is an authorization issue but maybe this should
@@ -90,6 +98,8 @@ class WorkflowFile(APIView):
         workflow_id: str,
         format: Optional[str] = None,
     ) -> FileResponse:
+        """ Gets the workflow file data
+        """
         user = authed_user(request)
         if user.username != username:
             raise NotAuthenticated()
@@ -105,6 +115,8 @@ class WorkflowFile(APIView):
         workflow_id: str,
         _format: Optional[str] = None,
     ) -> Response:
+        """ Updates (replaces) a workflow's file with the new file given to it.
+        """
         user = authed_user(request)
         if user.username != username:
             raise NotAuthenticated()

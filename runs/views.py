@@ -25,10 +25,14 @@ class RunList(APIView):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
     def get(self, _request: Request) -> Response:
+        """ Lists all runs known to Freva
+        """
         runs = Run.objects.all()
         return Response(RunSerializer(runs, many=True).data)
 
     def post(self, request: Request) -> Response:
+        """ Starts a new run of a workflow
+        """
         toil = ToilClient(
             settings.TOIL["host"],
             settings.TOIL["port"],
@@ -67,6 +71,10 @@ class RunDetail(APIView):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
     def get(self, _request: Request, run_id: str) -> Response:
+        """ Gets the data that Freva has on a run.
+
+        Similar to but distinct from [`RunStatus`], see that for more details.
+        """
         run = Run.objects.filter(id=run_id).first()
         if run is None:
             raise NotFound
@@ -77,6 +85,15 @@ class RunStatus(APIView):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
     def get(self, _request: Request, run_id: str) -> Response:
+        """ Gets the data that Toil has on a run.
+
+        This is where the majority of the run's information exists. Freva currently only
+        tracks information Toil doesn't and both are used because that's faster than
+        repeating all the information in Freva and setting up code to monitor the runs
+        and automatically extract the information. It would likely be a good idea to
+        consolidate this and have Freva hold this information so Toil doesn't need to be
+        queried for basic run information.
+        """
         toil = ToilClient(
             settings.TOIL["host"],
             settings.TOIL["port"],
@@ -93,6 +110,8 @@ class RunStdout(APIView):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
     def get(self, _request: Request, run_id: str) -> Response:
+        """ Gets `stdout` from a run
+        """
         toil = ToilClient(
             settings.TOIL["host"],
             settings.TOIL["port"],
@@ -109,6 +128,8 @@ class RunStderr(APIView):
     permission_classes: Sequence["_PermissionClass"] = [IsAuthenticated]
 
     def get(self, _request: Request, run_id: str) -> Response:
+        """ Gets `stderr` from a run
+        """
         toil = ToilClient(
             settings.TOIL["host"],
             settings.TOIL["port"],
