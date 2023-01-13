@@ -139,6 +139,13 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
+REST_FRAMEWORK = {
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.BasicAuthentication",
+    )
+}
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
@@ -151,14 +158,32 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_ROOT = "static_root/"
 STATIC_URL = "static/"
-STATICFILES_DIRS = ["dist"]
+STATICFILES_DIRS = ["dist", "static"]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+class MenuEntries(TypedDict):
+    title: str
+    url: str
+
+
+# This dict contains all entries which have to appear in the navbar on the frontend
+MENU_ENTRIES: list[MenuEntries] = [
+    {"title": "Home", "url": ""},
+    {"title": "Workflows", "url": "workflows"},
+    {"title": "Results", "url": "results"},
+    {"title": "History", "url": "history"},
+]
+
+
+# This is a list containing all frontend-routes. We need it so that we can provide
+# proper status codes for non-existing urls
+REACT_ROUTES = ["runs(/.+)?"] + [x["url"] for x in MENU_ENTRIES]

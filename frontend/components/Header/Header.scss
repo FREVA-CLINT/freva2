@@ -1,3 +1,14 @@
-.bla {
-  background-color: blue;
+@import "../../styles/theme.scss";
+
+.logo-header {
+  max-height: 100px;
+}
+
+.logo-header .logo-left {
+  max-width: 200px;
+}
+
+.logo-header .logo-right {
+  max-width: 200px;
+  height: auto;
 }
