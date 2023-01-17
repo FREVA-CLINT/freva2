@@ -107,3 +107,7 @@ Freva uses Toil as the underlying engine to execute its workflows and Toil itsel
 a sequence diagram of how the basic Freva actions move through the various components.
 
 ![Created with https://sequencediagram.org/, open the svg file directly there to edit](docs/freva-workflow-flow.svg)
+
+# Freva Architecture
+
+![Conceptual map of Freva architecture](docs/freva-toil-components.drawio.png)
